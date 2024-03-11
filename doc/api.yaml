@@ -425,8 +425,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Album'
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
     post:
       tags:
         - Album
@@ -460,8 +458,6 @@ paths:
                 $ref: '#/components/schemas/Album'
         400:
           description: Bad request. body does not contain required fields
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
   /album/{id}:
     parameters:
       - name: id
@@ -484,8 +480,6 @@ paths:
                 $ref: '#/components/schemas/Album'
         400:
           description: Bad request. albumId is invalid (not uuid)
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
         404:
           description: Album was not found.
     put:
@@ -521,8 +515,6 @@ paths:
                 $ref: '#/components/schemas/Album'
         400:
           description: Bad request. albumId is invalid (not uuid)
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
         404:
           description: Album was not found.
     delete:
@@ -535,8 +527,6 @@ paths:
           description: Deleted successfully
         400:
           description: Bad request. albumId is invalid (not uuid)
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
         404:
           description: Album was not found.
   /artist:
