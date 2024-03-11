@@ -132,8 +132,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
     post:
       tags:
         - Users
@@ -165,8 +163,6 @@ paths:
                 $ref: '#/components/schemas/User'
         400:
           description: Bad request. body does not contain required fields
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
   /user/{userId}:
     parameters:
       - name: userId
@@ -188,8 +184,6 @@ paths:
                 $ref: '#/components/schemas/User'
         400:
           description: Bad request. userId is invalid (not uuid)
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
         404:
           description: User not found
 
@@ -241,8 +235,6 @@ paths:
                     example: 1655999999
         400:
           description: Bad request. userId is invalid (not uuid)
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
         403:
           description: oldPassword is wrong
         404:
@@ -258,8 +250,6 @@ paths:
           description: The user has been deleted
         400:
           description: Bad request. userId is invalid (not uuid)
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
         404:
           description: User not found
   /track:

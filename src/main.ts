@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { config } from 'dotenv';
+import { ValidationPipe } from '@nestjs/common';
 import { OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 import { resolve } from 'path';
 import { readFile } from 'fs/promises';
@@ -8,6 +9,7 @@ import { load } from 'js-yaml';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(new ValidationPipe());
 
   config();
   const PORT = process.env.PORT || 4000;
