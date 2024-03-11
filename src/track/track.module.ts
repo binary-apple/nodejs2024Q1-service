@@ -6,5 +6,6 @@ import { TrackStore } from './track_store/track_store';
 @Module({
   controllers: [TrackController],
   providers: [TrackService, TrackStore],
+  exports: [TrackService],
 })
 export class TrackModule {}
