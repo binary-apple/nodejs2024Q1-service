@@ -8,7 +8,6 @@ import {
   NotFoundException,
   Put,
   BadRequestException,
-  ForbiddenException,
   ClassSerializerInterceptor,
   UseInterceptors,
   HttpStatus,
@@ -71,11 +70,8 @@ export class UserController {
       );
     }
     const result = this.userService.update(id, updateUsersPasswordDto);
-    if (result === 404) {
+    if (!result) {
       throw new NotFoundException('User not found');
-    }
-    if (result === 403) {
-      throw new ForbiddenException('oldPassword is wrong');
     }
     return result;
   }

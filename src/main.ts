@@ -6,6 +6,7 @@ import { OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 import { resolve } from 'path';
 import { readFile } from 'fs/promises';
 import { load } from 'js-yaml';
+import 'reflect-metadata';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

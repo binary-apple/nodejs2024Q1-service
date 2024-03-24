@@ -3,11 +3,29 @@ version: '3'
 services:
   node:
     build: .
+    container_name: node
     ports:
       - "4000:4000"
+    env_file:
+      - .env
     depends_on:
       - postgres
   postgres:
     build: ./db
-
+    container_name: db
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+      POSTGRES_DATABASE: db
+      POSTGRES_PORT: 5432
+      POSTGRES_HOST: localhost
+    volumes:
+      - database:/var/lib/postgresql/data
+volumes:
+  database:
 
