@@ -12,6 +12,8 @@ services:
       - postgres
     volumes:
       - ./src:/usr/app/src
+    networks:
+      - custom_network
   postgres:
     build: ./src/db
     container_name: db
@@ -21,6 +23,11 @@ services:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     volumes:
       - database:/var/lib/postgresql/data
+    networks:
+      - custom_network
 volumes:
   database:
+networks:
+  custom_network:
+    driver: bridge
 
