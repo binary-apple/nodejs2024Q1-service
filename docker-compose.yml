@@ -26,11 +26,13 @@ services:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     volumes:
       - database:/var/lib/postgresql/data
+      - dblogs:/var/log/postgresql
     networks:
       - custom_network
     restart: always
 volumes:
   database:
+  dblogs:
 networks:
   custom_network:
     driver: bridge
