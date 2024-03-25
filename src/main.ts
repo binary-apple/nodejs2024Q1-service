@@ -20,5 +20,6 @@ async function bootstrap() {
   SwaggerModule.setup('doc', app, docObject as OpenAPIObject);
 
   await app.listen(PORT);
+  console.log(`App is listening on url http://localhost:${PORT}`);
 }
 bootstrap();
