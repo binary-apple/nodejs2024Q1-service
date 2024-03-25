@@ -1,7 +1,5 @@
 FROM node:20-alpine
 
-ARG PORT=4000
-
 EXPOSE ${PORT}
 
 WORKDIR /usr/app

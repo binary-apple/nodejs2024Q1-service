@@ -8,7 +8,7 @@ import { TrackModule } from './track/track.module';
 import { FavsModule } from './favs/favs.module';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 // import { DataSource } from 'typeorm';
-import { DbDataSource } from 'db/data-source';
+import { DbDataSource } from 'src/db/data-source';
 
 @Module({
   imports: [
