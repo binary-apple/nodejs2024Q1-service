@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   BadRequestException,
-  NotFoundException,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -20,17 +19,17 @@ export class AlbumController {
   constructor(private readonly albumService: AlbumService) {}
 
   @Post()
-  create(@Body() createAlbumDto: CreateAlbumDto) {
-    return this.albumService.create(createAlbumDto);
+  async create(@Body() createAlbumDto: CreateAlbumDto) {
+    return await this.albumService.create(createAlbumDto);
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.albumService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     if (
       !id.match(
         /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
@@ -40,15 +39,14 @@ export class AlbumController {
         'Bad request. albumId is invalid (not uuid)',
       );
     }
-    const album = this.albumService.findOne(id);
-    if (!album) {
-      throw new NotFoundException('Album not found');
-    }
-    return album;
+    return await this.albumService.findOne(id);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateAlbumDto: UpdateAlbumDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateAlbumDto: UpdateAlbumDto,
+  ) {
     if (
       !id.match(
         /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
@@ -58,16 +56,12 @@ export class AlbumController {
         'Bad request. albumId is invalid (not uuid)',
       );
     }
-    const album = this.albumService.update(id, updateAlbumDto);
-    if (!album) {
-      throw new NotFoundException('Album not found');
-    }
-    return album;
+    return await this.albumService.update(id, updateAlbumDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     if (
       !id.match(
         /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
@@ -77,10 +71,6 @@ export class AlbumController {
         'Bad request. albumId is invalid (not uuid)',
       );
     }
-    const result = this.albumService.remove(id);
-    if (!result) {
-      throw new NotFoundException('Album not found');
-    }
-    return result;
+    await this.albumService.remove(id);
   }
 }

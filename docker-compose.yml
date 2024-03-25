@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  node:
+    build: .
+    container_name: node
+    image: binary_apple/node
+    env_file:
+      - .env
+    ports:
+      - "${PORT}:${PORT}"
+    depends_on:
+      - postgres
+    volumes:
+      - ./src:/usr/app/src
+    networks:
+      - custom_network
+    restart: always
+  postgres:
+    build: ./src/db
+    container_name: db
+    image: binary_apple/db
+    env_file:
+      - .env
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    volumes:
+      - database:/var/lib/postgresql/data
+      - dblogs:/var/log/postgresql
+    networks:
+      - custom_network
+    restart: always
+volumes:
+  database:
+  dblogs:
+networks:
+  custom_network:
+    driver: bridge
+

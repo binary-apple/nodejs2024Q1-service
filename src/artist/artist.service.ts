@@ -1,38 +1,61 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-import { ArtistStore } from './artist_store/artist_store';
 import { AlbumService } from 'src/album/album.service';
 import { TrackService } from 'src/track/track.service';
+import { Artist } from './entities/artist.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class ArtistService {
   constructor(
-    private readonly artistStore: ArtistStore,
+    @InjectRepository(Artist)
+    private artistsRepository: Repository<Artist>,
     private readonly albumService: AlbumService,
     private readonly trackService: TrackService,
   ) {}
 
-  create(createArtistDto: CreateArtistDto) {
-    return this.artistStore.create(createArtistDto);
+  async create(createArtistDto: CreateArtistDto) {
+    const createdArtist = this.artistsRepository.create(
+      new Artist({
+        id: randomUUID(),
+        name: createArtistDto.name,
+        grammy: createArtistDto.grammy,
+      }),
+    );
+
+    return await this.artistsRepository.save(createdArtist);
   }
 
-  findAll() {
-    return this.artistStore.findAll();
+  async findAll() {
+    return await this.artistsRepository.find();
   }
 
-  findOne(id: string) {
-    return this.artistStore.findOne(id);
+  async findOne(id: string) {
+    const artist = await this.artistsRepository.findOne({ where: { id: id } });
+    if (!artist) {
+      throw new NotFoundException('Artist not found');
+    }
+    return artist;
   }
 
-  update(id: string, updateArtistDto: UpdateArtistDto) {
-    return this.artistStore.update(id, updateArtistDto);
+  async update(id: string, updateArtistDto: UpdateArtistDto) {
+    const artist = await this.findOne(id);
+
+    return await this.artistsRepository.save(
+      new Artist({
+        ...artist,
+        name: updateArtistDto.name,
+        grammy: updateArtistDto.grammy,
+      }),
+    );
   }
 
-  remove(id: string) {
+  async remove(id: string) {
     // remove all artistId from albums
-    this.albumService
-      .findAll()
+    (await this.albumService.findAll())
       .filter((album) => album.artistId === id)
       .forEach((album) => {
         this.albumService.update(album.id, {
@@ -41,8 +64,7 @@ export class ArtistService {
         });
       });
     // remove all artistId from tracks
-    this.trackService
-      .findAll()
+    (await this.trackService.findAll())
       .filter((track) => track.artistId === id)
       .forEach((track) => {
         this.trackService.update(track.id, {
@@ -51,6 +73,23 @@ export class ArtistService {
         });
       });
 
-    return this.artistStore.remove(id);
+    await this.artistsRepository.remove(await this.findOne(id));
+  }
+
+  async setIsFavorite(id: string, isFavorite: boolean) {
+    const artist = await this.findOne(id);
+
+    return await this.artistsRepository.save(
+      new Artist({
+        ...artist,
+        isFavorite: isFavorite,
+      }),
+    );
+  }
+
+  async findFavorites() {
+    return await this.artistsRepository.find({
+      where: { isFavorite: true },
+    });
   }
 }
