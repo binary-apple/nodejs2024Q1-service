@@ -4,11 +4,18 @@
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
+- Install [Docker](https://docs.docker.com/engine/install/)
 
 ## Downloading
 
 ```
-git clone {repository URL}
+git clone https://github.com/binary-apple/nodejs2024Q1-service.git
+```
+
+Make sure that you are currently at `develop2` branch
+
+```
+git checkout develop2
 ```
 
 ## Setting environment variables
@@ -23,15 +30,28 @@ Rename .env.example file to .env
 npm install
 ```
 
-## Running application
+## Running application with Docker
+
+To run application
 
 ```
-npm start
+npm run docker
+```
+or
+```
+docker-compose up --build
 ```
 
 After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
+
+To scan vulnerabilities
+
+```
+npm run scan
+```
+
 
 ## Testing
 
