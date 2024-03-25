@@ -10,6 +10,8 @@ services:
       - .env
     depends_on:
       - postgres
+    volumes:
+      - ./src:/usr/app/src
   postgres:
     build: ./db
     container_name: db
