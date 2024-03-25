@@ -54,7 +54,7 @@ export class ArtistService {
   }
 
   async remove(id: string) {
-    // TODO: refactor remove all artistId from albums
+    // remove all artistId from albums
     (await this.albumService.findAll())
       .filter((album) => album.artistId === id)
       .forEach((album) => {
@@ -63,7 +63,7 @@ export class ArtistService {
           artistId: null,
         });
       });
-    // TODO: refactor remove all artistId from tracks
+    // remove all artistId from tracks
     (await this.trackService.findAll())
       .filter((track) => track.artistId === id)
       .forEach((track) => {
@@ -74,5 +74,22 @@ export class ArtistService {
       });
 
     await this.artistsRepository.remove(await this.findOne(id));
+  }
+
+  async setIsFavorite(id: string, isFavorite: boolean) {
+    const artist = await this.findOne(id);
+
+    return await this.artistsRepository.save(
+      new Artist({
+        ...artist,
+        isFavorite: isFavorite,
+      }),
+    );
+  }
+
+  async findFavorites() {
+    return await this.artistsRepository.find({
+      where: { isFavorite: true },
+    });
   }
 }

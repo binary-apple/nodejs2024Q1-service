@@ -65,4 +65,21 @@ export class AlbumService {
       });
     await this.albumsRepository.remove(await this.findOne(id));
   }
+
+  async setIsFavorite(id: string, isFavorite: boolean) {
+    const artist = await this.findOne(id);
+
+    return await this.albumsRepository.save(
+      new Album({
+        ...artist,
+        isFavorite: isFavorite,
+      }),
+    );
+  }
+
+  async findFavorites() {
+    return await this.albumsRepository.find({
+      where: { isFavorite: true },
+    });
+  }
 }

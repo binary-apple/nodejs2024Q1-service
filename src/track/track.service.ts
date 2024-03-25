@@ -56,4 +56,21 @@ export class TrackService {
   async remove(id: string) {
     await this.tracksRepository.remove(await this.findOne(id));
   }
+
+  async setIsFavorite(id: string, isFavorite: boolean) {
+    const artist = await this.findOne(id);
+
+    return await this.tracksRepository.save(
+      new Track({
+        ...artist,
+        isFavorite: isFavorite,
+      }),
+    );
+  }
+
+  async findFavorites() {
+    return await this.tracksRepository.find({
+      where: { isFavorite: true },
+    });
+  }
 }

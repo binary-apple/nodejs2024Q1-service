@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { IsUUID } from 'class-validator';
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
@@ -14,6 +15,10 @@ export class Track {
   albumId: string | null; // refers to Album
   @Column({ nullable: true })
   duration: number; // integer number
+
+  @Exclude()
+  @Column({ default: false })
+  isFavorite: boolean;
 
   constructor(source: Partial<Track>) {
     Object.assign(this, source);

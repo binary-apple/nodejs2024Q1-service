@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { IsUUID } from 'class-validator';
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
@@ -11,6 +12,10 @@ export class Artist {
   name: string;
   @Column()
   grammy: boolean;
+
+  @Exclude()
+  @Column({ default: false })
+  isFavorite: boolean;
 
   constructor(source: Partial<Artist>) {
     Object.assign(this, source);

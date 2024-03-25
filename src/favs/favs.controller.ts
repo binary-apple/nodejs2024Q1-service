@@ -7,7 +7,8 @@ import {
   BadRequestException,
   HttpCode,
   HttpStatus,
-  NotFoundException,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { FavsService } from './favs.service';
 
@@ -16,13 +17,13 @@ export class FavsController {
   constructor(private readonly favsService: FavsService) {}
 
   @Get()
-  findAll() {
-    const result = this.favsService.findAll();
-    return result;
+  @UseInterceptors(ClassSerializerInterceptor)
+  async findAll() {
+    return await this.favsService.findAll();
   }
 
   @Post('/album/:id')
-  createAlbum(@Param('id') id: string) {
+  async createAlbum(@Param('id') id: string) {
     if (
       !id.match(
         /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
@@ -32,12 +33,12 @@ export class FavsController {
         'Bad request. artistId is invalid (not uuid)',
       );
     }
-    return this.favsService.createFavAlbum(id);
+    await this.favsService.createFavAlbum(id);
   }
 
   @Delete('/album/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  removeAlbum(@Param('id') id: string) {
+  async removeAlbum(@Param('id') id: string) {
     if (
       !id.match(
         /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
@@ -47,15 +48,11 @@ export class FavsController {
         'Bad request. artistId is invalid (not uuid)',
       );
     }
-    const result = this.favsService.removeFavAlbum(id);
-    if (!result) {
-      throw new NotFoundException('Album not found');
-    }
-    return result;
+    await this.favsService.removeFavAlbum(id);
   }
 
   @Post('/artist/:id')
-  createArtist(@Param('id') id: string) {
+  async createArtist(@Param('id') id: string) {
     if (
       !id.match(
         /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
@@ -65,12 +62,12 @@ export class FavsController {
         'Bad request. artistId is invalid (not uuid)',
       );
     }
-    return this.favsService.createFavArtist(id);
+    await this.favsService.createFavArtist(id);
   }
 
   @Delete('/artist/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  removeArtist(@Param('id') id: string) {
+  async removeArtist(@Param('id') id: string) {
     if (
       !id.match(
         /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
@@ -80,15 +77,11 @@ export class FavsController {
         'Bad request. artistId is invalid (not uuid)',
       );
     }
-    const result = this.favsService.removeFavArtist(id);
-    if (!result) {
-      throw new NotFoundException('Artist not found');
-    }
-    return result;
+    await this.favsService.removeFavArtist(id);
   }
 
   @Post('/track/:id')
-  createTrack(@Param('id') id: string) {
+  async createTrack(@Param('id') id: string) {
     if (
       !id.match(
         /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
@@ -98,12 +91,12 @@ export class FavsController {
         'Bad request. artistId is invalid (not uuid)',
       );
     }
-    return this.favsService.createFavTrack(id);
+    await this.favsService.createFavTrack(id);
   }
 
   @Delete('/track/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  removeTrack(@Param('id') id: string) {
+  async removeTrack(@Param('id') id: string) {
     if (
       !id.match(
         /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
@@ -113,10 +106,6 @@ export class FavsController {
         'Bad request. artistId is invalid (not uuid)',
       );
     }
-    const result = this.favsService.removeFavTrack(id);
-    if (!result) {
-      throw new NotFoundException('Track not found');
-    }
-    return;
+    await this.favsService.removeFavTrack(id);
   }
 }

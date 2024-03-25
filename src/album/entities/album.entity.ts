@@ -1,4 +1,5 @@
 // import { Optional } from '@nestjs/common';
+import { Exclude } from 'class-transformer';
 import { IsUUID } from 'class-validator';
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
@@ -12,9 +13,11 @@ export class Album {
   @Column()
   year: number;
   @Column({ nullable: true })
-  // @IsUUID()
-  // @Optional()
   artistId: string | null; // refers to Artist
+
+  @Exclude()
+  @Column({ default: false })
+  isFavorite: boolean;
 
   constructor(source: Partial<Album>) {
     Object.assign(this, source);
