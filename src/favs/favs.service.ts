@@ -23,7 +23,7 @@ export class FavsService {
         .map(async (id) => await this.albumService.findOne(id))
         .filter((item) => !!item),
       tracks: allFavs.tracks
-        .map((id) => this.trackService.findOne(id))
+        .map(async (id) => await this.trackService.findOne(id))
         .filter((item) => !!item),
     };
   }
@@ -54,9 +54,10 @@ export class FavsService {
     return this.favsStore.removeArtist(id);
   }
 
-  createFavTrack(id: string) {
-    const track = this.trackService.findOne(id);
-    if (!track) {
+  async createFavTrack(id: string) {
+    try {
+      await this.trackService.findOne(id);
+    } catch {
       throw new UnprocessableEntityException(`Track with id doesn't exist.`);
     }
     return this.favsStore.createTrack(id);

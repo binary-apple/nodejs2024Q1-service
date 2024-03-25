@@ -64,8 +64,7 @@ export class ArtistService {
         });
       });
     // TODO: refactor remove all artistId from tracks
-    this.trackService
-      .findAll()
+    (await this.trackService.findAll())
       .filter((track) => track.artistId === id)
       .forEach((track) => {
         this.trackService.update(track.id, {

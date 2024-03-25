@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   BadRequestException,
-  NotFoundException,
   HttpStatus,
   HttpCode,
 } from '@nestjs/common';
@@ -20,17 +19,17 @@ export class TrackController {
   constructor(private readonly trackService: TrackService) {}
 
   @Post()
-  create(@Body() createTrackDto: CreateTrackDto) {
-    return this.trackService.create(createTrackDto);
+  async create(@Body() createTrackDto: CreateTrackDto) {
+    return await this.trackService.create(createTrackDto);
   }
 
   @Get()
-  findAll() {
+  async findAll() {
     return this.trackService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     if (
       !id.match(
         /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
@@ -40,15 +39,14 @@ export class TrackController {
         'Bad request. trackId is invalid (not uuid)',
       );
     }
-    const track = this.trackService.findOne(id);
-    if (!track) {
-      throw new NotFoundException('Track not found');
-    }
-    return track;
+    return await this.trackService.findOne(id);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateTrackDto: UpdateTrackDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateTrackDto: UpdateTrackDto,
+  ) {
     if (
       !id.match(
         /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
@@ -58,16 +56,12 @@ export class TrackController {
         'Bad request. trackId is invalid (not uuid)',
       );
     }
-    const track = this.trackService.update(id, updateTrackDto);
-    if (!track) {
-      throw new NotFoundException('Track not found');
-    }
-    return track;
+    return await this.trackService.update(id, updateTrackDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     if (
       !id.match(
         /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
@@ -77,10 +71,6 @@ export class TrackController {
         'Bad request. trackId is invalid (not uuid)',
       );
     }
-    const result = this.trackService.remove(id);
-    if (!result) {
-      throw new NotFoundException('Track not found');
-    }
-    return result;
+    await this.trackService.remove(id);
   }
 }

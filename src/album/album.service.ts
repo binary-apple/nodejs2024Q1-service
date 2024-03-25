@@ -55,11 +55,10 @@ export class AlbumService {
 
   async remove(id: string) {
     // remove all albumId from tracks
-    this.trackService
-      .findAll()
+    (await this.trackService.findAll())
       .filter((track) => track.albumId === id)
-      .forEach((track) => {
-        this.trackService.update(track.id, {
+      .forEach(async (track) => {
+        await this.trackService.update(track.id, {
           ...track,
           albumId: null,
         });

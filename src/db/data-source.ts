@@ -1,6 +1,7 @@
 import { config } from 'dotenv';
 import { Album } from 'src/album/entities/album.entity';
 import { Artist } from 'src/artist/entities/artist.entity';
+import { Track } from 'src/track/entities/track.entity';
 import { User } from 'src/user/entities/user.entity';
 
 config();
@@ -14,6 +15,6 @@ export const DbDataSource = {
   database: process.env.POSTGRES_DB,
   synchronize: true,
   logging: true,
-  entities: [User, Artist, Album],
+  entities: [User, Artist, Album, Track],
   migrationsRun: true,
 };
