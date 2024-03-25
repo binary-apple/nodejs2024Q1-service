@@ -4,6 +4,7 @@ services:
   node:
     build: .
     container_name: node
+    image: binary_apple/node
     env_file:
       - .env
     ports:
@@ -14,9 +15,11 @@ services:
       - ./src:/usr/app/src
     networks:
       - custom_network
+    restart: always
   postgres:
     build: ./src/db
     container_name: db
+    image: binary_apple/db
     env_file:
       - .env
     ports:
@@ -25,6 +28,7 @@ services:
       - database:/var/lib/postgresql/data
     networks:
       - custom_network
+    restart: always
 volumes:
   database:
 networks:
