@@ -55,8 +55,7 @@ export class ArtistService {
 
   async remove(id: string) {
     // TODO: refactor remove all artistId from albums
-    this.albumService
-      .findAll()
+    (await this.albumService.findAll())
       .filter((album) => album.artistId === id)
       .forEach((album) => {
         this.albumService.update(album.id, {

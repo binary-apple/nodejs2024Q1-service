@@ -1,33 +1,59 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import { AlbumStore } from './album_store/album_store';
 import { TrackService } from 'src/track/track.service';
+import { Album } from './entities/album.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class AlbumService {
   constructor(
-    private readonly albumStore: AlbumStore,
+    @InjectRepository(Album)
+    private albumsRepository: Repository<Album>,
     private readonly trackService: TrackService,
   ) {}
 
-  create(createAlbumDto: CreateAlbumDto) {
-    return this.albumStore.create(createAlbumDto);
+  async create(createAlbumDto: CreateAlbumDto) {
+    const createdAlbum = this.albumsRepository.create(
+      new Album({
+        id: randomUUID(),
+        name: createAlbumDto.name,
+        year: createAlbumDto.year,
+        artistId: createAlbumDto.artistId,
+      }),
+    );
+
+    return await this.albumsRepository.save(createdAlbum);
   }
 
-  findAll() {
-    return this.albumStore.findAll();
+  async findAll() {
+    return await this.albumsRepository.find();
   }
 
-  findOne(id: string) {
-    return this.albumStore.findOne(id);
+  async findOne(id: string) {
+    const album = await this.albumsRepository.findOne({ where: { id: id } });
+    if (!album) {
+      throw new NotFoundException('Album not found');
+    }
+    return album;
   }
 
-  update(id: string, updateAlbumDto: UpdateAlbumDto) {
-    return this.albumStore.update(id, updateAlbumDto);
+  async update(id: string, updateAlbumDto: UpdateAlbumDto) {
+    const album = await this.findOne(id);
+
+    return await this.albumsRepository.save(
+      new Album({
+        ...album,
+        name: updateAlbumDto.name,
+        year: updateAlbumDto.year,
+        artistId: updateAlbumDto.artistId,
+      }),
+    );
   }
 
-  remove(id: string) {
+  async remove(id: string) {
     // remove all albumId from tracks
     this.trackService
       .findAll()
@@ -38,6 +64,6 @@ export class AlbumService {
           albumId: null,
         });
       });
-    return this.albumStore.remove(id);
+    await this.albumsRepository.remove(await this.findOne(id));
   }
 }

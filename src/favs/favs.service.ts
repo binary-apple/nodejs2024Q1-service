@@ -20,7 +20,7 @@ export class FavsService {
         .map(async (id) => await this.artistService.findOne(id))
         .filter((item) => !!item),
       albums: allFavs.albums
-        .map((id) => this.albumService.findOne(id))
+        .map(async (id) => await this.albumService.findOne(id))
         .filter((item) => !!item),
       tracks: allFavs.tracks
         .map((id) => this.trackService.findOne(id))
@@ -28,9 +28,10 @@ export class FavsService {
     };
   }
 
-  createFavAlbum(id: string) {
-    const album = this.albumService.findOne(id);
-    if (!album) {
+  async createFavAlbum(id: string) {
+    try {
+      await this.albumService.findOne(id);
+    } catch {
       throw new UnprocessableEntityException(`Album with id doesn't exist.`);
     }
     return this.favsStore.createAlbum(id);
