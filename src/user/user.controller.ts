@@ -5,7 +5,6 @@ import {
   Body,
   Param,
   Delete,
-  NotFoundException,
   Put,
   BadRequestException,
   ClassSerializerInterceptor,
@@ -23,8 +22,8 @@ export class UserController {
 
   @Post()
   @UseInterceptors(ClassSerializerInterceptor)
-  create(@Body() createUserDto: CreateUserDto) {
-    const newUser = this.userService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    const newUser = await this.userService.create(createUserDto);
     if (!newUser) {
       throw new BadRequestException(
         'Bad request. body does not contain required fields',
@@ -34,13 +33,14 @@ export class UserController {
   }
 
   @Get()
-  findAll() {
+  @UseInterceptors(ClassSerializerInterceptor)
+  async findAll() {
     return this.userService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    const user = this.userService.findOne(id);
+  @UseInterceptors(ClassSerializerInterceptor)
+  async findOne(@Param('id') id: string) {
     if (
       !id.match(
         /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
@@ -48,15 +48,12 @@ export class UserController {
     ) {
       throw new BadRequestException('Bad request. userId is invalid');
     }
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    return user;
+    return await this.userService.findOne(id);
   }
 
   @Put(':id')
   @UseInterceptors(ClassSerializerInterceptor)
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateUsersPasswordDto: UpdateUsersPasswordDto,
   ) {
@@ -69,16 +66,12 @@ export class UserController {
         'Bad request. userId is invalid (not uuid)',
       );
     }
-    const result = this.userService.update(id, updateUsersPasswordDto);
-    if (!result) {
-      throw new NotFoundException('User not found');
-    }
-    return result;
+    return await this.userService.update(id, updateUsersPasswordDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     if (
       !id.match(
         /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
@@ -86,10 +79,6 @@ export class UserController {
     ) {
       throw new BadRequestException('Bad request. userId is invalid');
     }
-    const result = this.userService.remove(id);
-    if (!result) {
-      throw new NotFoundException('User not found');
-    }
-    return;
+    await this.userService.remove(id);
   }
 }

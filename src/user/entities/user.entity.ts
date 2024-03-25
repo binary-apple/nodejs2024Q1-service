@@ -1,4 +1,4 @@
-import { Exclude } from 'class-transformer';
+import { Exclude, Transform } from 'class-transformer';
 import { IsUUID } from 'class-validator';
 import { Column, Entity, PrimaryColumn } from 'typeorm';
 
@@ -20,8 +20,10 @@ export class User {
   @Column()
   version: number; // integer number, increments on update
   @Column('bigint')
+  @Transform(({ value }) => +value)
   createdAt: number; // timestamp of creation
   @Column('bigint')
+  @Transform(({ value }) => +value)
   updatedAt: number; // timestamp of last update
 
   constructor(source: Partial<User>) {
