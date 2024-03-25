@@ -1,4 +1,5 @@
 import { config } from 'dotenv';
+import { Artist } from 'src/artist/entities/artist.entity';
 import { User } from 'src/user/entities/user.entity';
 
 config();
@@ -13,7 +14,7 @@ export const DbDataSource = {
   synchronize: true,
   logging: true,
   // entities: ['dist/**/entities/*.entity.js'],
-  entities: [User],
+  entities: [User, Artist],
   // migrations: ['dist/**/migration/*.js'],
   migrationsRun: true,
 };

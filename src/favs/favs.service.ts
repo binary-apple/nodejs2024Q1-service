@@ -13,11 +13,11 @@ export class FavsService {
     private readonly trackService: TrackService,
   ) {}
 
-  findAll() {
+  async findAll() {
     const allFavs = this.favsStore.findAll();
     return {
       artists: allFavs.artists
-        .map((id) => this.artistService.findOne(id))
+        .map(async (id) => await this.artistService.findOne(id))
         .filter((item) => !!item),
       albums: allFavs.albums
         .map((id) => this.albumService.findOne(id))
@@ -40,9 +40,10 @@ export class FavsService {
     return this.favsStore.removeAlbum(id);
   }
 
-  createFavArtist(id: string) {
-    const artist = this.artistService.findOne(id);
-    if (!artist) {
+  async createFavArtist(id: string) {
+    try {
+      await this.artistService.findOne(id);
+    } catch (err) {
       throw new UnprocessableEntityException(`Artist with id doesn't exist.`);
     }
     return this.favsStore.createArtist(id);

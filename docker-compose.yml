@@ -19,13 +19,6 @@ services:
       - .env
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
-    # environment:
-    #   POSTGRES_USER: ${POSTGRES_USER}
-    #   POSTGRES_PASSWORD: password
-    #   POSTGRES_DB: db
-    #   POSTGRES_DATABASE: db
-    #   POSTGRES_PORT: 5432
-    #   POSTGRES_HOST: localhost
     volumes:
       - database:/var/lib/postgresql/data
 volumes:
